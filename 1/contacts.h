@@ -19,7 +19,7 @@ typedef struct work_t {
 } work_t;
 
 typedef struct person_t {
-    unsigned int id;
+    int id;
     char name[STR_SIZE];
     char surname[STR_SIZE];
     char patronimic[STR_SIZE];
@@ -29,7 +29,7 @@ typedef struct person_t {
 } person_t;
 
 typedef struct contacts_t {
-    unsigned int size;
+    int size;
     person_t* list;
 } contacts_t;
 
@@ -37,7 +37,7 @@ typedef struct contacts_t {
 void InitContacts(contacts_t* cnt);
 void InitPerson(person_t* prs);
 void InitWork(work_t* work);
-void InitSociaclclclNetwork(social_network_t* sn);
+void InitSocialNetwork(social_network_t* sn);
 
 void AddPerson(contacts_t* cnt, person_t* prs);
 void EditPerson(person_t* prs, person_t* edit_prs);
@@ -50,12 +50,12 @@ void SetPhone(person_t* prs, char* _phone);
 void SetWork(person_t* prs, work_t* _work);
 void SetSocialNetwork(person_t* prs, social_network_t* _sn);
 
-void SetCompany(work_t* work, char* _company);
-void SetPost(work_t* work, char* _post);
+void SetWorkCompany(work_t* work, char* _company);
+void SetWorkPost(work_t* work, char* _post);
 
 void SetSocNetName(social_network_t* sn, char* _name);
 void SetSocNetLink(social_network_t* sn, char* _link);
 
-person_t* GetPersonById(contacts_t* cnt, unsigned int _id);
+person_t* GetPersonById(contacts_t* cnt, int _id);
 
 #endif

@@ -1,1 +1,226 @@
-linux t somechtoto*gext linux
+При запуске программы выдаёт Segmention fault. Как мне исправить эту проблему?
+Текст программы:
+main.c
+```
+#include <stdio.h>
+#include "contacts.h"
+
+void PrintContacts(contacts_t* cnt) {
+	unsigned int i = 0;
+	
+	printf("------------ Contacts ------------\n");
+	
+	for ( ; i < cnt->size; i++) {
+		printf("\tID: %32d\n", cnt->list[i].id);
+		printf("\tName: %32s\n", cnt->list[i].name);
+		printf("\tSurname: %32s\n", cnt->list[i].surname);
+		printf("\tPatrominic %32s\n", cnt->list[i].patronimic);
+		printf("\tPhone: %32s\n", cnt->list[i].phone);
+		printf("\tWork:\n");
+		printf("\t\tCompany: %32s\n", cnt->list[i].work.company);
+		printf("\t\tPost: %32s\n", cnt->list[i].work.post);
+		printf("\tSocialNetwork:\n");
+		printf("\t\tName: %32s\n", cnt->list[i].socialNetwork.name);
+		printf("\t\tLink: %32s\n\n", cnt->list[i].socialNetwork.link);
+	}
+	
+	printf("-------------- End ---------------\n");
+}
+
+int main() {
+	
+	//creating contacts list
+	contacts_t contacts;
+	InitContacts(&contacts);
+	
+	person_t person;
+	InitPerson(&person);
+	
+	AddPerson(&contacts, &person);
+	
+	PrintContacts(&contacts);
+	
+	return 0;
+}
+```
+contacts.h
+```
+#ifndef CONTACTS_H_
+#define CONTACTS_H_
+
+#include <stdlib.h>
+#include <string.h>
+
+#define STR_SIZE 32
+
+//Data types
+
+typedef struct social_network_t {
+    char name[STR_SIZE];
+    char link[STR_SIZE];
+} social_network_t;
+
+typedef struct work_t {
+    char company[STR_SIZE];
+    char post[STR_SIZE];
+} work_t;
+
+typedef struct person_t {
+    unsigned int id;
+    char name[STR_SIZE];
+    char surname[STR_SIZE];
+    char patronimic[STR_SIZE];
+    char phone[STR_SIZE];
+    work_t work;
+    social_network_t socialNetwork;
+} person_t;
+
+typedef struct contacts_t {
+    unsigned int size;
+    person_t* list;
+} contacts_t;
+
+// Functions
+void InitContacts(contacts_t* cnt);
+void InitPerson(person_t* prs);
+void InitWork(work_t* work);
+void InitSocialNetwork(social_network_t* sn);
+
+void AddPerson(contacts_t* cnt, person_t* prs);
+void EditPerson(person_t* prs, person_t* edit_prs);
+void DeletePerson(contacts_t* cnt, person_t* prs);
+
+void SetName(person_t* prs, char* _name);
+void SetSurname(person_t* prs, char* _surname);
+void SetPatronimic(person_t* prs, char* _patronimic);
+void SetPhone(person_t* prs, char* _phone);
+void SetWork(person_t* prs, work_t* _work);
+void SetSocialNetwork(person_t* prs, social_network_t* _sn);
+
+void SetWorkCompany(work_t* work, char* _company);
+void SetWorkPost(work_t* work, char* _post);
+
+void SetSocNetName(social_network_t* sn, char* _name);
+void SetSocNetLink(social_network_t* sn, char* _link);
+
+person_t* GetPersonById(contacts_t* cnt, unsigned int _id);
+
+#endif
+```
+contacts.c
+```
+#include "contacts.h"
+
+void InitContacts(contacts_t* cnt) {
+	cnt->size = 0;
+	cnt->list = NULL;
+}
+
+void InitPerson(person_t* prs) {
+	char def_str[STR_SIZE] = "_default";
+	
+	prs->id = -1;
+	strcpy(prs->name, def_str);
+	strcpy(prs->surname, def_str);
+	strcpy(prs->patronimic,  def_str);
+	strcpy(prs->phone,  def_str);
+	InitWork(&prs->work);
+	InitSocialNetwork(&prs->socialNetwork);
+	
+	free(def_str);
+}
+
+void InitWork(work_t* work) {
+	char def_str[STR_SIZE] = "_default";
+
+	strcpy(work->company, def_str);
+	strcpy(work->post, def_str);
+	
+	free(def_str);
+}
+
+void InitSocialNetwork(social_network_t* sn) {
+	char def_str[STR_SIZE] = "_default";
+
+	strcpy(sn->name, def_str);
+	strcpy(sn->link, def_str);
+	
+	free(def_str);
+}
+
+void AddPerson(contacts_t* cnt, person_t* prs) {
+	cnt->list = realloc(cnt->list, (cnt->size + 1) * sizeof(person_t));
+	cnt->size++;
+	
+	strcpy(&cnt->list[cnt->size - 1], &prs);
+	cnt->list[cnt->size - 1].id = cnt->size - 1;
+}
+
+void EditPerson(person_t* prs, person_t* edit_prs) {
+	strcpy(prs, edit_prs);
+}
+
+void DeletePerson(contacts_t* cnt, person_t* prs) {
+	for (unsigned int i = prs->id; i < cnt->size - 1; i++) {
+		cnt->list[i] = cnt->list[i + 1];
+	}
+	
+	//free(cnt->list[cnt->size - 1].id);
+	free(cnt->list[cnt->size - 1].name);
+	free(cnt->list[cnt->size - 1].surname);
+	free(cnt->list[cnt->size - 1].patronimic);
+	free(cnt->list[cnt->size - 1].phone);
+	free(cnt->list[cnt->size - 1].work.company);
+	free(cnt->list[cnt->size - 1].work.post);
+	free(cnt->list[cnt->size - 1].socialNetwork.name);
+	free(cnt->list[cnt->size - 1].socialNetwork.link);
+}
+
+void SetName(person_t* prs, char* _name) {
+	strcpy(prs->name, _name);
+}
+
+void SetSurname(person_t* prs, char* _surname) {
+	strcpy(prs->surname, _surname);
+}
+
+void SetPatronimic(person_t* prs, char* _patronimic) {
+	strcpy(prs->patronimic, _patronimic);
+}
+
+void SetPhone(person_t* prs, char* _phone) {
+	strcpy(prs->phone, _phone);
+}
+
+void SetWork(person_t* prs, work_t* _work)  {
+	SetWorkCompany(&prs->work, _work->company);
+	SetWorkPost(&prs->work, _work->post);
+}
+
+void SetSocialNetwork(person_t* prs, social_network_t* _sn) {
+	SetSocNetName(&prs->name, _sn->name);
+	SetSocNetLink(&prs->socialNetwork, _sn->link);
+}
+
+void SetWorkCompany(work_t* work, char* _company) {
+	strcpy(work->company, _company);
+}
+
+void SetWorkPost(work_t* work, char* _post) {
+	strcpy(work->post, _post);
+}
+
+void SetSocNetName(social_network_t* sn, char* _name)  {
+	strcpy(sn->name, _name);
+}
+
+void SetSocNetLink(social_network_t* sn, char* _link)  {
+	strcpy(sn->link, _link);
+}
+
+person_t* GetPersonById(contacts_t* cnt, unsigned int _id) {
+	if (_id >= cnt->size) return NULL;
+	
+	return &(cnt->list[_id]);
+}
+```
