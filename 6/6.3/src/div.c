@@ -1,6 +1,6 @@
 #include <stdarg.h>
 
-double Divide(int n, ...) {
+double Devide(int n, ...) {
     double result = 0;
     
     va_list factor;
