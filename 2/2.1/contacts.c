@@ -6,7 +6,7 @@ void InitContacts(contacts_t* cnt) {
 }
 
 void InitPerson(person_t* prs) {
-	char def_str[STR_SIZE] = "_default";
+	char def_str[STR_SIZE] = "_default\0";
 	
 	prs->id = 0;
 	strncpy(prs->name, def_str, STR_SIZE);
@@ -20,7 +20,7 @@ void InitPerson(person_t* prs) {
 }
 
 void InitWork(work_t* work) {
-	char def_str[STR_SIZE] = "_default";
+	char def_str[STR_SIZE] = "_default\0";
 
 	strncpy(work->company, def_str, STR_SIZE);
 	strncpy(work->post, def_str, STR_SIZE);
@@ -29,7 +29,7 @@ void InitWork(work_t* work) {
 }
 
 void InitSocialNetwork(social_network_t* sn) {
-	char def_str[STR_SIZE] = "_default";
+	char def_str[STR_SIZE] = "_default\0";
 
 	strncpy(sn->name, def_str, STR_SIZE);
 	strncpy(sn->link, def_str, STR_SIZE);

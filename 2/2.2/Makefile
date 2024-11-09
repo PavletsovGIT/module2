@@ -1,18 +1,18 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
-OBJ = main.o contacts.o
-TARGET = contacts_app
+OBJ = main.o calc.o
+TARGET = calc
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
 
-main.o: main.c contacts.h
+main.o: main.c calc.h
 	$(CC) $(CFLAGS) -c main.c
 
-contacts.o: contacts.c contacts.h
-	$(CC) $(CFLAGS) -c contacts.c
+calc.o: calc.c calc.h
+	$(CC) $(CFLAGS) -c calc.c
 
 clean:
 	rm -f $(OBJ) $(TARGET)

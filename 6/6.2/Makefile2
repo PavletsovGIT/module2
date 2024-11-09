@@ -1,0 +1,36 @@
+CC         = gcc
+CFLAGS     = -Wall -Wextra -Werror
+
+.PHONY: all mrproper clean
+
+all: libs/libsumm.so libs/libdiff.so libs/libmult.so libs/libdiv.so app
+
+app:
+	$(CC) $(CFLAGS) -o app main.o -L libs/*.so -lmyLibrary -lm
+
+main.o: src/main.c
+	$(CC) $(CFLAGS) -c -o main.o main.c
+
+summ.o: src/summ.c
+	$(CC) $CFLAGS -c -o summ.o src/summ.c
+
+diff.o: src/diff.c
+	$(CC) $CFLAGS -c -o diff.o src/diff.c
+
+mult.o: src/mult.c
+	$(CC) $CFLAGS -c -o mult.o src/mult.c
+
+div.o: src/div.c
+	$(CC) $CFLAGS -c -o div.o src/div.c
+
+libs/libsumm.so: summ.o
+	$(CC) $(CFLAGS) -shared -o libs/libsumm.so summ.o -lm
+
+libs/libdiff.so: diff.o
+	$(CC) $(CFLAGS) -shared -o libs/libdiff.so diff.o -lm
+
+libs/libmult.so: mult.o
+	$(CC) $(CFLAGS) -shared -o libs/libmult.so mult.o -lm
+
+libs/libdiv.so: div.o
+	$(CC) $(CFLAGS) -shared -o libs/libdiv.so div.o -lm
