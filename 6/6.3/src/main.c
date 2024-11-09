@@ -20,9 +20,9 @@ operation_func GetFuncPtr(const char* path_lib, const char* func_name);
 int main() {
 
 	Summ = GetFuncPtr("./libs/libsumm.so", "Summ");
-	Difference = GetFuncPtr("./libs/libdiff.so", "Diff");
-	Multiply = GetFuncPtr("./libs/libmult.so", "Multilpy");
-	Division = GetFuncPtr("./libs/libdiv.so", "Division");
+	Difference = GetFuncPtr("./libs/libdiff.so", "Difference");
+	Multiply = GetFuncPtr("./libs/libmult.so", "Multiply");
+	Division = GetFuncPtr("./libs/libdiv.so", "Divide");
 	
 	double (*action)(double, double);
 	
@@ -74,7 +74,7 @@ operation_func GetFuncPtr(const char* path_lib, const char* func_name) {
 	handle = dlopen(path_lib, RTLD_LAZY);
 	
 	if (!handle) {
-		frptinf(stderr, "Can't load .so: %s\n", dlerror());
+		fprintf(stderr, "Can't load .so: %s\n", dlerror());
 		exit(1);
 	}
 	

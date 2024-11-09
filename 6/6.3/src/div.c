@@ -12,7 +12,6 @@ double Divide(int n, ...) {
         double next = va_arg(factor, double);
         
         if (next == 0) {
-            printf("Ошибка: деление на ноль!\n");
             return -1;
         }
         

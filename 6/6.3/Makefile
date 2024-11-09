@@ -1,39 +1,67 @@
+TARGET = app
+
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+
+CFLAGS = -Wall
+
+SRC_MAIN = src/main.c
+
+SRC_SUMM = src/summ.c
+
+SRC_DIFF = src/diff.c
+
+SRC_MULT = src/mult.c
+
+SRC_DIV = src/div.c
+
+OBJ_MAIN = main.o
+
+OBJ_SUMM = summ.o
+
+OBJ_DIFF = diff.o
+
+OBJ_MULT = mult.o
+
+OBJ_DIV = div.o
+
+LIBSUMM = ./libs/libsumm.so
+
+LIBDIFF = ./libs/libdiff.so
+
+LIBMULT = ./libs/libmult.so
+
+LIBDIV = ./libs/libdiv.so
 
 .PHONY: all clean
 
-all: libs/libsumm.so libs/libdiff.so libs/libmult.so libs/libdiv.so app
+all: $(TARGET)
 
-app:
-	$(CC) $(CFLAGS) -o app main.o -L libs/*.so -lmyLibrary -lm
+$(TARGET): $(OBJ_MAIN) $(LIBSUMM) $(LIBDIFF) $(LIBMULT) $(LIBDIV)
+	$(CC) $(OBJ_MAIN) -L./libs/ -lsumm -ldiff -lmult -ldiv -o $(TARGET)
 
-main.o: src/main.c
-	$(CC) $(CFLAGS) -c main.o -o main.c
+$(OBJ_MAIN): $(SRC_MAIN)
+	$(CC) $(CFLAGS) -c $(SRC_MAIN)
+
+$(OBJ_SUMM): $(SRC_SUMM)
+	$(CC) $(CFLAGS) -fPIC -c $(SRC_SUMM)
 	
-libs/libsumm.so: summ.o
-	$(CC) $(CFLAGS) -shared -o libs/libsumm.so summ.o -lm
+$(OBJ_DIFF): $(SRC_DIFF)
+	$(CC) $(CFLAGS) -fPIC -c $(SRC_DIFF)
 
-libs/libdiff.so: diff.o
-	$(CC) $(CFLAGS) -shared -o libs/libdiff.so diff.o -lm
+$(OBJ_MULT): $(SRC_MULT)
+	$(CC) $(CFLAGS) -fPIC -c $(SRC_MULT)
 
-libs/libmult.so: mult.o
-	$(CC) $(CFLAGS) -shared -o libs/libmult.so mult.o -lm
+$(OBJ_DIV): $(SRC_DIV)
+	$(CC) $(CFLAGS) -fPIC -c $(SRC_DIV)
 
-libs/libdiv.so: div.o
-	$(CC) $(CFLAGS) -shared -o libs/libdiv.so div.o -lm
+$(LIBSUMM): $(OBJ_SUMM)
+	$(CC) -shared $(OBJ_SUMM) -o $(LIBSUMM)
 
-summ.o: src/summ.c
-	$(CC) $(CFLAGS) -fPIC -c summ.o -o src/summ.c
+$(LIBDIFF): $(OBJ_DIFF)
+	$(CC) -shared $(OBJ_DIFF) -o $(LIBDIFF) 
 
-diff.o: src/diff.c
-	$(CC) $(CFLAGS) -fPIC -c diff.o -o src/diff.c
+$(LIBMULT): $(OBJ_MULT)
+	$(CC) -shared $(OBJ_MULT) -o $(LIBMULT) 
 
-mult.o: src/mult.c
-	$(CC) $(CFLAGS) -fPIC -c mult.o -o src/mult.c
-
-div.o: src/div.c
-	$(CC) $(CFLAGS) -fPIC -c div.o -o src/div.c
-
-clean:
-	rm -f ./*.o ./libs/*.so app 
+$(LIBDIV): $(OBJ_DIV)
+	$(CC) -shared $(OBJ_DIV) -o $(LIBDIV) 
