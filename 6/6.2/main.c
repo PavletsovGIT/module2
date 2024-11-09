@@ -63,6 +63,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+	/*
     // Получаем указатель на функцию PrintContacts
     print_contacts_ptr print_contacts = (print_contacts_ptr)dlsym(handle, "PrintContacts");
     if (!print_contacts) {
@@ -70,6 +71,7 @@ int main() {
         dlclose(handle);
         exit(EXIT_FAILURE);
     }
+    */
 
     // Получаем указатель на функцию DeletePerson
     delete_person_ptr delete_person = (delete_person_ptr)dlsym(handle, "DeletePerson");

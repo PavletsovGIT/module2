@@ -1,44 +1,60 @@
-# Имя исполняемого файла
 TARGET = app
 
-# Имя динамической библиотеки
-LIBNAME = libcontacts.so
+CC = gcc 
 
-# Флаги компилятора
-CFLAGS = -Wall -g -fpic
+CFLAGS = -Wall
 
-# Линковщик
-LD = gcc
+LIBNAME = libcontacts
 
-# Флаг для линкования динамических библиотек
-LDFLAGS = -shared
+LIB = libcontacts.so
 
-# Исходные файлы для библиотеки
-SRCS_LIB = contacts.c
+LIBFLAG = -lcontacts
 
-# Объектные файлы для библиотеки
-OBJS_LIB = $(SRCS_LIB:.c=.o)
+SRC_LIB = contacts.c
 
-# Исходный файл для исполняемого файла
+OBJ_LIB = contacts.o
+
 SRC_MAIN = main.c
 
-# Объектный файл для исполняемого файла
-OBJ_MAIN = $(SRC_MAIN:.c=.o)
+OBJ_MAIN = main.o
 
-.PHONY: all clean genlib
+.PHONY: all clean
 
 all: $(TARGET)
 
-genlib: $(LIBNAME)
+$(OBJ_LIB): $(SRC_LIB)
+	$(CC) $(CFLAGS) -fPIC -c $(SRC_LIB)
 
-$(TARGET): $(OBJ_MAIN) $(LIBNAME)
-	$(LD) $(CFLAGS) $^ -o $@
-
-$(LIBNAME): $(OBJS_LIB)
-	$(LD) $(LDFLAGS) $^ -o $@
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_MAIN): $(SRC_MAIN)
+	$(CC) $(CFLAGS) -c $(SRC_MAIN)
+	
+$(LIB): $(OBJ_LIB)
+	$(CC) -shared $(OBJ_LIB) -o $(LIB)
+$(TARGET): $(OBJ_MAIN) $(LIB) $(LIBFLAG)
+	$(CC) $(OBJ_MAIN) -L. $(LIBFLAG) -o $(TARGET)
 
 clean:
-	rm -f $(TARGET) $(OBJS_LIB) $(OBJ_MAIN) $(LIBNAME)
+	rm *.o *.so
+
+# Если программа пишет что не может найти библиотеку:
+# 1. Проверяем есть ли переменная LD_LIBRARY_PATH:
+# 1.1 $echo LD_LIBRARY_PATH
+# Если в выводе ничего, значит переменная есть (используем пункт 2), если нет, то пункт 3
+# 2.
+# $ LD_LIBRARY_PATH=/home/pavletsov21/eltex/module2/6/6.2:${LD_LIBRARY_PATH}
+# $ export LD_LIBRARY_PATH
+# 3. 
+# $ LD_LIBRARY_PATH=/home/pavletsov21/eltex/module2/6/6.2
+# $ export LD_LIBRARY_PATH
+# 4. Проверяем нашла ли сама система библиотеку:
+# $ ldd app
+# Неправильный вывод:
+#	linux-vdso.so.1 (0x00007ffc8a95d000)
+#  libcontacts.so => not found
+#	 libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ff7a1044000)
+#	 /lib64/ld-linux-x86-64.so.2 (0x00007ff7a1240000)
+# Правильный вывод:
+#	 linux-vdso.so.1 (0x00007ffd8dfcf000)
+# 	 libcontacts.so => /home/pavletsov21/eltex/module2/6/6.2/libcontacts.so (0x00007f69e355a000)
+#	 libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f69e3365000)
+#	 /lib64/ld-linux-x86-64.so.2 (0x00007f69e3566000)

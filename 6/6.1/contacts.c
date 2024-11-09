@@ -91,7 +91,7 @@ void AddPerson(contacts_t* cnt, person_t* prs) {
         last->next = newItem;
         newItem->prev = last;
     }
-	//newItem->p->id = 2;
+	newItem->p->id = 2;
     cnt->size++;
 
     Sort(cnt);

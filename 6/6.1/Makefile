@@ -12,7 +12,7 @@ LIBFLAG = -lcontacts
 SRC_LIB = contacts.c
 
 # Объектные файлы для библиотеки
-OBJS_LIB = $(SRC_LIB:.c=.o)
+OBJS_LIB = $(SRC_LIB:.c=.o)	
 
 # Список исходного файла для исполняемого файла
 SRC_MAIN = main.c
@@ -28,13 +28,13 @@ $(OBJS_LIB): $(SRCS_LIB)
 	$(CC) -c -fPIC $(SRC_LIB)
 
 $(LIBNAME): $(OBJS_LIB)
-	ar rcs $(LIBNAME) $(OBJS_LIB)
+	ar -rc $(LIBNAME) $(OBJS_LIB)
 
 $(OBJ_MAIN): $(SRC_MAIN)
 	$(CC)  $(SRC_MAIN) -c $(OBJ_MAIN)
 
-$(TARGET): $(SRC_MAIN)
-	$(CC) $(SRC_MAIN) -L. libcontacts.a -o $(TARGET)
+$(TARGET): $(OBJ_MAIN) $(LIBNAME)
+	$(CC) $(OBJ_MAIN) -L. $(LIBFLAG) -o $(TARGET)
 
 clean:
 	rm -f $(TARGET) $(OBJS_LIB) $(OBJ_MAIN) $(LIBNAME)
