@@ -1,69 +1,84 @@
-#include <sys/stat.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "chmod.h"
 
-#define CH_M_SIZE 9
-#define I_M_SIZE 3
-
-void PrintIntArr(int* arr, size_t size);
-char ConvertStrToBinary(const char* src);
-char ConvertCharToBinary(char c);
-void printb(char c);
+/*
+3.1 (2 балла). Написать программу для расчета маски прав доступа к файлу.
+1)Пользователь может ввести права доступа в буквенном или цифровом
+обозначении, ему должно быть показано соответствующее битовое
+представление.
+2)Пользователь может ввести имя файла, и ему отобразится буквенное,
+цифровое и битовое представление прав доступа. Использовать функцию stat
+для получения информации о файле. Сравнить результат с выводом,
+например, ls -l.
+3)Пользователь может изменить права доступа, определенные в первом или
+втором пункте, введя команды модификации атрибутов (подобно команде
+chmod). При этом отображается буквенное, цифровое и битовое
+представление прав доступа. Изменение прав доступа не нужно применять к
+файлу.
+*/
 
 int main() {
-	char result = 0b000000000;
-
-	// Пользователь вводит права доступа в буквенном значении, выводится соответствующее битовое значение
-	char user_c_mod[CH_M_SIZE] = "ug+r";
-	result = ConvertStrToBinary(user_c_mod);
-	printb(result);
+	
+	unsigned int perms = 511;
+	
+	char* users = "go", rights = "rw";
+	
+	printrights(del_permissions(users, rights, perms), stdout);
+	
+	/*
+	// 1)
+	char result;
+	
+	char* mod1 = "u+rw";
+	
+	char* mod2 = "rx";
+	
+	char* mod3 = "ug+wx";
+	
+	char mod4 = 0b000000011;
+	char* mod4_0 = "o-x";
+	
+	result = str_to_binary(mod1);
+	printstr(result, stdout);
+	printd(result, stdout);
+	printb(result, stdout);
+	
+	result = str_to_binary(mod2);
+	printstr(result, stdout);
+	printd(result, stdout);
+	printb(result, stdout);
+	
+	result = str_to_binary(mod3);
+	printstr(result, stdout);
+	printd(result, stdout);
+	printb(result, stdout);
+	
+	result = str_to_binary(mod4_0);
+	printstr(result, stdout);
+	printd(result, stdout);
+	printb(result, stdout);
+	*/
+	
+	/*
+	struct roots_t roots[] = {
+		{'r', 0b100100100}, 
+		{'w', 0b010010010}, 
+		{'x', 0b001001001}, 
+		{'u', 0b100100100}, 
+		{'g', 0b100100100}, 
+		{'o', 0b100100100}, 
+		{'a', 0b111111111}, 
+		{'0', 0b000000000} 
+	};
+	
+	char X = 755;
+	
+	printf("%X\n", X);
+	printf("%X\n", X << 5);
+	
+	printb(1, stdout);
+	*/
 	
 	return 0;	
 }
 
-char ConvertStrToBinary(const char* src) {
-	char result = 0b000000000;	
-	
-	for (int i = 0; i < CH_M_SIZE; i++) {
-		if (src[i] == 'r' || src[i] == 'w' || src[i] == 'x') {
-			result &= ConvertCharToBinary(src[i]);
-		} else {
-			result |= ConvertCharToBinary(src[i]);
-		}
-	}
-	
-	return result;
-}
 
-char ConvertCharToBinary(char c) {
-	switch (c) {
-		case 'u':
-			return 0b111000000;
-		case 'g':
-			return 0b000111000;
-		case 'o':
-			return 0b000000111;
-		case 'a':
-			return 0b111111111;
-		case 'r':
-			return 0b100100100;
-		case 'w':
-			return 0b010010010;
-		case 'x':
-			return 0b001001001;
-		default:
-			return 0b000000000;
-	}
-}
-
-void printb(char c) {
-	int a, i = 0;
-	
-	for ( ; i < CH_M_SIZE; i++) {
-		a = c >> i;
-		
-		(a & 1) ? printf("1") : printf("0");
-	}
-	printf("\n");
-}
