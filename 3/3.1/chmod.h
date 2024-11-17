@@ -10,6 +10,7 @@
 #define MAX_DIGIT_RIGHTS 3
 #define RB_SIZE 9 // Number of bits in rights
 #define MOD_COUNT 7
+#define MODE_SIZE 10
 
 #define U 0
 #define G 3
@@ -23,17 +24,18 @@ typedef struct bin_mod {
 	unsigned int n;
 } bin_mod;
 
-
-
 // Return length of num
 unsigned int intlen(unsigned int n);
-// Convert integer to rights in binary format
-unsigned int int_to_persmissions(unsigned int n);
+// Convert integer to permissions in binary format
+unsigned int int_to_permissions(unsigned int n);
+// convert "go" to 0b000111111 or convert "wx" to 0b011011011
+unsigned int create_str_mask(char* str);
 unsigned int add_permissions(char* users, char* rights, unsigned int perms);
-unsigned int set_permissions(char* users, char* rights, unsigned int perms);
+unsigned int set_permissions_s(char* str);
+unsigned int set_permissions_u(unsigned int n);
 unsigned int del_permissions(char* users, char* rights, unsigned int perms);
-// Convert string to rights in binary format
-unsigned int str_to_rights(char* str, unsigned int perms);
+// return permissions in format rw-r--r--
+void strmode(mode_t mode, char* buf);
 // Print unsigned int like rigths
 void printrights(const unsigned int k, FILE* outstream);
 // Print unsigned int in binary format

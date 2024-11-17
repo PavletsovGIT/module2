@@ -20,65 +20,19 @@ int main() {
 	
 	unsigned int perms = 511;
 	
-	char* users = "go", rights = "rw";
+	char users[] = "go", rights[] = "wx";
 	
-	printrights(del_permissions(users, rights, perms), stdout);
+	printbi(perms, stdout);
+	printf("\n");
 	
-	/*
-	// 1)
-	char result;
+	printrights(set_permissions_u(511), stdout);
 	
-	char* mod1 = "u+rw";
+	char ch_perms[MODE_SIZE];
 	
-	char* mod2 = "rx";
+	mode_t mode = 
 	
-	char* mod3 = "ug+wx";
-	
-	char mod4 = 0b000000011;
-	char* mod4_0 = "o-x";
-	
-	result = str_to_binary(mod1);
-	printstr(result, stdout);
-	printd(result, stdout);
-	printb(result, stdout);
-	
-	result = str_to_binary(mod2);
-	printstr(result, stdout);
-	printd(result, stdout);
-	printb(result, stdout);
-	
-	result = str_to_binary(mod3);
-	printstr(result, stdout);
-	printd(result, stdout);
-	printb(result, stdout);
-	
-	result = str_to_binary(mod4_0);
-	printstr(result, stdout);
-	printd(result, stdout);
-	printb(result, stdout);
-	*/
-	
-	/*
-	struct roots_t roots[] = {
-		{'r', 0b100100100}, 
-		{'w', 0b010010010}, 
-		{'x', 0b001001001}, 
-		{'u', 0b100100100}, 
-		{'g', 0b100100100}, 
-		{'o', 0b100100100}, 
-		{'a', 0b111111111}, 
-		{'0', 0b000000000} 
-	};
-	
-	char X = 755;
-	
-	printf("%X\n", X);
-	printf("%X\n", X << 5);
-	
-	printb(1, stdout);
-	*/
+	strmode(511, ch_perms);
+	printf("\n%s\n", ch_perms);
 	
 	return 0;	
 }
-
-

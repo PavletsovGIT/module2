@@ -6,7 +6,7 @@ static bin_mod mods[MOD_COUNT] = {
 	{'o', 7}, 
 	{'r', 292}, 
 	{'w', 146}, 
-	{'o', 73}, 
+	{'x', 73}, 
 	{'a', 511}
 };
 
@@ -19,8 +19,8 @@ unsigned int intlen(unsigned int n) {
 	return count;
 }
 
-unsigned int int_to_persmissions(unsigned int n) { // n = 755
-	unsigned int i, perms = 0, m; // rights = 0b000000000
+unsigned int int_to_permissions(unsigned int n) { // n = 755
+	unsigned int perms = 0, m; // rights = 0b000000000
 	
 	// for others
 	m = n % 10;
@@ -40,75 +40,59 @@ unsigned int int_to_persmissions(unsigned int n) { // n = 755
 	return perms;
 }
 
-unsigned int add_permissions(char* users, char* rights, unsigned int perms) {
-	int i, j;
-	unsigned int my_perms = 0;
-	// for users
-	for (i = 0; i < strlen(users); i++) { // get from users
+unsigned int create_str_mask(char* str) {
+    int i, j, res = 0;
+    
+    for (i = 0; i < strlen(str); i++) {
 		for (j = 0; j < MOD_COUNT; j++) {
-			if (users[i] == mods[j].ch) {
-				my_perms |= mods[j].n;
+			if (str[i] == mods[j].ch) {
+				res |= mods[j].n;
 			}
 		}
 	}
 	
-	// for rights
-	for (i = 0; i < strlen(rights); i++) { // get from users
-		for (j = 0; j < MOD_COUNT; j++) {
-			if (rights[i] == mods[j].ch) {
-				my_perms &= mods[j].n;
-			}
-		}
-	}
-	
-	return perms | my_perms;
+	return res;
 }
 
-unsigned int set_permissions(char* users, char* rights, unsigned int perms) {
-	int i, j;
-	perms = 0;
-	// for users
-	for (i = 0; i < strlen(users); i++) { // get from users
-		for (j = 0; j < MOD_COUNT; j++) {
-			if (users[i] == mods[j].ch) {
-				perms |= mods[j].n;
-			}
-		}
-	}
+unsigned int add_permissions(char* users, char* rights, unsigned int perms) {
+	unsigned int usr_mask, rgh_mask, buff;
 	
-	// for rights
-	for (i = 0; i < strlen(rights); i++) { // get from users
-		for (j = 0; j < MOD_COUNT; j++) {
-			if (rights[i] == mods[j].ch) {
-				perms &= mods[j].n;
-			}
-		}
-	}
+	usr_mask = create_str_mask(users);
+	rgh_mask = create_str_mask(rights);
 	
-	return perms;
+	buff = usr_mask & rgh_mask;
+	
+	return perms | buff;
+}
+
+unsigned int set_permissions_s(char* str) {
+    unsigned int res = 0;
+    int i;
+    
+    if (strlen(str) != RB_SIZE) {return 0;}
+    
+    for (i = 0; i < RB_SIZE; i++) {
+        if (str[i] != '-') {
+            res |= 1 << i;
+        }
+    }
+    
+    return res;
+}
+
+unsigned int set_permissions_u(unsigned int n) {
+    return int_to_permissions(n);
 }
 
 unsigned int del_permissions(char* users, char* rights, unsigned int perms) {
-	int i, j;
+	unsigned int usr_mask, rgh_mask, buff;
 	
-	for (i = 0; i < strlen(users); i++) {
-		for (j = 0; j < MOD_COUNT; j++) {
-			if (users[i] == mods[j].ch) {
-				perms &= ~mods[j].n;
-			}
-		}
-	}
+	usr_mask = create_str_mask(users);
+	rgh_mask = create_str_mask(rights);
 	
+	buff = usr_mask & rgh_mask;
 	
-	for (i = 0; i < strlen(rights); i++) {
-		for (j = 0; j < MOD_COUNT; j++) {
-			if (rights[i] == mods[j].ch) {
-				perms |= ~mods[j].n;
-			}
-		}
-	}
-	
-	return perms;
+	return perms ^ buff;
 }
 
 /*
@@ -116,36 +100,21 @@ unsigned int del_permissions(char* users, char* rights, unsigned int perms) {
 	rights means r/w/x
 	perms means rw-r-x--x
 */
-unsigned int str_to_rights(char* str, unsigned int perms) {
-	int i = 0;
-	char* users, rights;
-	unsigned int (*action)(char* users, char* rights, unsigned int perms) = NULL;
-	users = strtok(str, "+-="); // Разделяем строку по знаку
-	rights = strtok(NULL, "+-=");
-	
-	for (i = 0; i < strlen(str); i++) {
-		if (str[i] == '+') {
-			action = add_permissions;
-			break;
-		}
-		if (str[i] == '-') {
-			action = del_permissions;
-			break;
-		}
-		if (str[i] == '=') {
-			action = set_permissions;
-			break;
-		}
-	}
-	if (action == NULL) return 0;
-	
-	return action(users, rights, perms);
+
+// return permissions in format rw-r--r--
+// buf must have at least 10 bytes
+void strmode(mode_t mode, char* buf) {
+  const char chars[] = "rwxrwxrwx";
+  for (size_t i = 0; i < 9; i++) {
+    buf[i] = (mode & (1 << (8-i))) ? chars[i] : '-';
+  }
+  buf[9] = '\0';
 }
 
 void printrights(const unsigned int k, FILE* outstream) {
-	int a, i = 0;
+	int a, i;
 	
-	for ( ; i < RB_SIZE; i++) {
+	for (i = RB_SIZE - 1; i >= 0; i--) {
 		a = k >> i;
 		
 		(a & 1) ? fprintf(outstream, "1") : fprintf(outstream, "0");
