@@ -1,44 +1,42 @@
-#ifndef CHMOD_H_
-#define CHMOD_H_
-
 #include <sys/stat.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
-#define BITS_I32 32
-#define MAX_DIGIT_RIGHTS 3
-#define RB_SIZE 9 // Number of bits in rights
-#define MOD_COUNT 7
-#define MODE_SIZE 10
+enum class { 
+	CLASS_OWNER, 
+	CLASS_GROUP, 
+	CLASS_OTHER 
+};
 
-#define U 0
-#define G 3
-#define O 6
-#define R 0
-#define W 1
-#define X 2
+enum permission { 
+	PERMISSION_READ, 
+	PERMISSION_WRITE, 
+	PERMISSION_EXECUTE 
+};
 
-typedef struct bin_mod {
-	unsigned char ch;
-	unsigned int n;
-} bin_mod;
+mode_t perm(enum class c, enum permission p);
+bool mode_contains(mode_t mode, enum class c, enum permission p);
+mode_t mode_add(mode_t mode, enum class c, enum permission p);
+mode_t mode_rm(mode_t mode, enum class c, enum permission p) ;
+mode_t add_mask(mode_t mode, mode_t mask);
+mode_t rm_mask(mode_t mode, mode_t mask);
+// buf must have at least 10 bytes
+void strmode(const mode_t mode, char * buf);
+mode_t modestr(char* str);
+mode_t get_file_mode(const char* path);
 
-// Return length of num
-unsigned int intlen(unsigned int n);
-// Convert integer to permissions in binary format
-unsigned int int_to_permissions(unsigned int n);
-// convert "go" to 0b000111111 or convert "wx" to 0b011011011
-unsigned int create_str_mask(char* str);
-unsigned int add_permissions(char* users, char* rights, unsigned int perms);
-unsigned int set_permissions_s(char* str);
-unsigned int set_permissions_u(unsigned int n);
-unsigned int del_permissions(char* users, char* rights, unsigned int perms);
-// return permissions in format rw-r--r--
-void strmode(mode_t mode, char* buf);
-// Print unsigned int like rigths
-void printrights(const unsigned int k, FILE* outstream);
-// Print unsigned int in binary format
-void printbi(const unsigned int k, FILE* outstream); // Print bits of u_int variable
+// u+x
+mode_t my_chmod_str(mode_t mode, char* chg_str);
+mode_t my_chmod_num(mode_t mode, mode_t changes);
 
-#endif // CHMOD_H_
+/*
+000 0
+001 1
+010 2
+011 3
+100 4
+101 5
+110 6
+111 7
+*/
