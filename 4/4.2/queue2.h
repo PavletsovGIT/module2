@@ -25,7 +25,7 @@ typedef struct packet_t {
 } packet_t;
 
 typedef struct item_t {
-	packet_t* packet;
+	packet_t packet;
 	
 	// Pointers
 	struct item_t* next;
@@ -42,10 +42,10 @@ void init_packet(packet_t* packet);
 void init_item(item_t* item);
 void init_queue(queue_t* queue);
 
-void swap(packet_t* a, packet_t* b);
+void packet_swap(packet_t* a, packet_t* b);
 void sort(queue_t* queue);
 
-void enqueue(queue_t* queue, packet_t* packet);
+void enqueue(queue_t* queue, packet_t packet);
 packet_t dequeue(queue_t* queue);
 packet_t define_priority_dequeue(queue_t* queue, unsigned char priority);
 packet_t not_lower_priority_dequeue(queue_t* queue, unsigned char priority); 
