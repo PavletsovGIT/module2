@@ -9,7 +9,7 @@ double Summ(int n, ...)
 	
 	for (int i = 0; i < n; i++)
 	{
-		result += va_arg(factor, double);
+		result += va_arg(factor, double) * 2;
 	}
 	
 	va_end(factor);

@@ -30,6 +30,7 @@ $(OBJ_MAIN): $(SRC_MAIN)
 	
 $(LIB): $(OBJ_LIB)
 	$(CC) -shared $(OBJ_LIB) -o $(LIB)
+	
 $(TARGET): $(OBJ_MAIN) $(LIB) $(LIBFLAG)
 	$(CC) $(OBJ_MAIN) -L. $(LIBFLAG) -o $(TARGET)
 

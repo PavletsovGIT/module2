@@ -27,6 +27,6 @@ unsigned int gen_net_mask(const unsigned int count);
 unsigned int gen_rand_ip();
 unsigned int ipcmp(unsigned int ip_src, unsigned int ip_dst, unsigned int mask); // Compare part of ip with subnet address between two ip adresses; return 0 - if equal;
 void printb(const unsigned char c, FILE* outstream); // Print bits of u_char variable
-void printbi(const unsigned int k, FILE* outstream); // Print bits of i_int variable
+void printbi(const unsigned int k, FILE* outstream); // Print bits of u_int variable
 void printip(const unsigned int k, FILE* outstream); // Print variable in IPv4-format
 void printmask(const unsigned int mask, FILE* outstream); // Print variable in IP-mask-format
