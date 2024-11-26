@@ -1,4 +1,4 @@
-TARGET = app
+TARGET = a.out
 
 SRC = queue2
 MAIN = main
@@ -19,4 +19,4 @@ $(SRC).o: $(SRC).c
 	$(CC) $(CFLAGS) -c $(SRC).c
 
 clean:
-	rm *.o
+	rm -rf *.o *.out
