@@ -1,4 +1,4 @@
-TARGET = app
+TARGET = a.out
 
 CC = gcc
 
@@ -26,4 +26,4 @@ $(OBJ_LIB): $(SRC_LIB)
 	$(CC) $(CFLAGS) -c $(SRC_LIB) 
 
 clean:
-	rm *.o
+	rm -rf *.o *.out

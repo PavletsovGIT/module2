@@ -1,7 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall
 OBJ = main.o contacts.o
-TARGET = contacts_app
+TARGET = a.out
+
+.PHONY: all clean
 
 all: $(TARGET)
 
@@ -15,7 +17,7 @@ contacts.o: contacts.c contacts.h
 	$(CC) $(CFLAGS) -c contacts.c
 
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -rf *.o *.out
 
-.PHONY: all clean
+
 

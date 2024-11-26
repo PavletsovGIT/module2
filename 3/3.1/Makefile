@@ -1,4 +1,4 @@
-TARGET = app
+TARGET = a.out
 
 CC = gcc
 
@@ -18,4 +18,4 @@ chmod.o: chmod.c
 	$(CC) $(CFLAGS) -c chmod.c
 	
 clean:
-	rm *.o
+	rm -rf *.o a.out
